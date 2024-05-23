@@ -1,0 +1,39 @@
+from fastapi import FastAPI
+from dbfread import DBF, FieldParser
+from fastapi.params import Body
+from pydantic import BaseModel
+from datetime import time
+
+
+table = DBF('MEMBER.DBF' , load=True )
+
+
+app= FastAPI()
+
+
+class Post(BaseModel):
+    fleetRequest: str
+
+class GetNo(BaseModel):
+    MemNo:int
+
+@app.post("/posts")
+    
+def post_request(postReq: Post):    
+    file=open(r'C:\pythonTxt\test.txt','a')   
+    file.write(str(postReq.fleetRequest)+ " \r")
+    file.close()
+    return{"New Request:": " Request Success"}
+    
+
+@app.get("/table")
+def get_table(PNO: int ):    
+    for record in DBF('MEMBER.DBF'):         
+        if PNO == record['PNO'] :            
+            print(record['NAME'])
+            return{record['NAME']}
+   
+    
+
+
+
